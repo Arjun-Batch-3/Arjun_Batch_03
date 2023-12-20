@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int>rank1(100);
+vector<int>parent(100);
+int cost=0;
+void makeSet(int x)
+{
+    parent[x]=x;
+    rank1[x]=0;
+}
+int find(int x)
+{
+   if(parent[x]==x) return x;
+   else
+   {
+       int parentX=parent[x];
+        int friend1=find(parentX);
+        parent[x]=friend1;
+        return friend1;
+
+   }
+}
+bool union1(int u,int v)
+{
+    bool f=true;
+    int Ru=find(u);
+    int Rv=find(v);
+    if(Ru!=Rv)
+    {
+        if(rank1[Ru]>rank1[Rv])
+        {
+            parent[Rv]=Ru;
+        }
+        else if(rank1[Rv]>rank1[Ru])
+        {
+            parent[Ru]=Rv;
+        }
+        else{
+            parent[Rv]=Ru;
+            rank1[Ru]++;
+        }
+    }
+    else{f=false;}
+    return f;
+}
+struct Edge
+{
+    int u,v,w;
+};
+
+bool cmp(Edge a,Edge b)
+{
+    if(a.w<=b.w)return true;
+    else
+        {
+            return false;
+        }
+}
+
+
+int MST(vector<Edge>edges,int v)
+{
+    sort(edges.begin(),edges.end(),cmp);
+    for(int i=0;i<v;i++)makeSet(i);
+    for(Edge x:edges)
+    {
+        bool isSelect=union1(x.u,x.v);
+
+        if(isSelect)
+        {
+          cost=cost+x.w;
+          cout<<x.u<<" "<<x.v<<" ";
+        }
+    }
+    return cost;
+}
+int main()
+{
+    int v,e;
+    cin>>v>>e;
+    vector<Edge>edges(e);
+    for(int i=0;i<e;i++)
+    {
+        cin>>edges[i].u>>edges[i].v>>edges[i].w;
+    }
+    int result=MST(edges,v);
+    cout<<result<<endl;
+    return 0;
+}

@@ -1,0 +1,87 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N=1e3+5;
+typedef pair<int,int>pii;
+const int INF=1e9+5;
+
+vector<bool>visited(N);
+vector<pii>G[N];
+vector<int>dist(N,INF);
+vector<int>parent(N);
+map<int,bool>mp;
+vector<int>ShortestPath;
+//priority_queue<pii,vector<pii>,greater<pii>>pq;
+
+void dijktra(int u)
+{
+    priority_queue<pii,vector<pii>,greater<pii>>pq;
+    pq.push({0,u});
+    dist[u]=0;
+
+    while(!pq.empty())
+    {
+        pii parent=pq.top();
+        ShortestPath.push_back(parent.second);
+        pq.pop();
+        int parentCost=parent.first;
+        int parentNode=parent.second;
+
+        if(visited[parentNode]==false)
+        {
+            visited[parentNode]=true;
+            for(int i=0;i<G[parentNode].size();i++)
+            {
+                pii child=G[parentNode][i];
+                int childCost=child.first;
+                int childNode=child.second;
+                if(parentCost+childCost<dist[childNode])
+                {
+                    dist[childNode]=parentCost+childCost;
+                    pq.push({dist[childNode],childNode});
+                }
+            }
+        }
+    }
+
+}
+
+int main()
+{
+    int n,e;
+    cin>>n>>e;
+    vector<int>nodes;
+    for(int i=0;i<e;i++)
+    {
+        int u,v,w;
+        cin>>u>>v>>w;
+        if(mp[u]==false)
+        {
+            mp[u]=true;
+            nodes.push_back(u);
+        }
+        if(mp[v]==false)
+        {
+            mp[v]=true;
+            nodes.push_back(v);
+        }
+        G[u].push_back({w,v});
+        G[v].push_back({w,u});
+    }
+    for(int i=0;i<nodes.size();i++)
+    {
+        if(visited[nodes[i]]!=true)
+        {
+
+            //dist[v[i]]=0;
+          dijktra(nodes[i]);
+        }
+    }
+    cout<<"shorted distance cost"<<endl;
+    for(int i=0;i<ShortestPath.size();i++)
+    {
+        cout<<"From source "<<1<<"to node "<<nodes[i]<<" min distance->"<<dist[nodes[i]]<<endl;
+    }
+
+    return 0;
+}

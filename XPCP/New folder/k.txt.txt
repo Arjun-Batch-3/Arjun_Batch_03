@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+struct item{
+string id;
+int w;
+int v;
+};
+int cache[200][200];
+bool cmp(item a,item b)
+{
+  double x=(double)a.v/a.w;
+  double y=(double)b.v/b.w;
+  if(x>=y)return true;
+  else
+    return false;
+
+}
+
+int knapsack(vector<item>products,int it,int cap)
+{
+    if(cache[it][cap]!=-1)
+    {
+        return cache[it][cap];
+    }
+    if(cap==0||it==products.size())return 0;
+
+    item cur=products[it];
+    if(cur.w>cap)
+    {//nebo na
+        int friend1=(products,it+1,cap);
+        cache[it][cap]=friend1;
+        return friend1;
+    }
+    else
+    {
+        //nebo
+        int f1=cur.v+knapsack(products,it+1,cap-cur.w);
+        int f2=knapsack(products,it+1,cap);
+         cache[it][cap]=max(f1,f2);
+        return max(f1,f2);
+
+    }
+
+}
+
+
+
+int main()
+{
+ int n;
+ cin>>n;
+ vector<item>products(n);
+ memset(cache,-1,sizeof(cache));
+for(int i=0;i<n;i++)
+{
+   cin.ignore();
+   cin>> products[i].id>>products[i].w>>products[i].v;
+}
+int cap;
+cin>>cap;
+int res=knapsack(products,0,cap);
+cout<<"total profit"<<res;
+return 0;
+}
+
